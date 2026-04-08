@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Iris Classifier — PyTorch + FastAPI</title>
+    <meta name="description" content="Iris çiçek türü tahmini yapan derin öğrenme tabanlı web uygulaması. PyTorch modeli FastAPI ile sunulmaktadır." />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- Background decorative orbs -->
+<div class="bg-orbs" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+</div>
+
+<div class="page-wrapper">
+
+    <!-- ── Header ── -->
+    <header>
+        <div class="badge"><span class="dot"></span>PyTorch · FastAPI · Deep Learning</div>
+        <h1>Iris Çiçek Sınıflandırıcı</h1>
+        <p class="subtitle">
+            Dört özelliği ayarlayarak yapay zeka modelinin hangi iris türünü
+            tahmin ettiğini anında görün.
+        </p>
+    </header>
+
+    <!-- ── Main Grid ── -->
+    <div class="main-grid">
+
+        <!-- Input Card -->
+        <section class="card" aria-label="Özellik girişi">
+            <div class="card-header">
+                <div class="card-icon">🧬</div>
+                <div>
+                    <div class="card-title">Çiçek Özellikleri</div>
+                    <div class="card-subtitle">Slider veya sayısal giriş kullanın</div>
+                </div>
+            </div>
+
+            <!-- Sliders (built by JS) -->
+            <div id="sliders-container"></div>
+
+            <!-- Number inputs (built by JS) -->
+            <div class="card-header" style="margin-top:24px;margin-bottom:16px">
+                <div class="card-icon" style="background:linear-gradient(135deg,#0891b2,#06b6d4)">🔢</div>
+                <div>
+                    <div class="card-title">Kesin Değer Girin</div>
+                    <div class="card-subtitle">Sayısal değerleri doğrudan yazın</div>
+                </div>
+            </div>
+            <div class="number-inputs">
+                <div id="number-inputs-container" style="display:contents"></div>
+            </div>
+
+            <!-- Buttons -->
+            <button class="predict-btn" id="predict-btn" type="button">
+                <span class="btn-content"><span>🔮</span> Tahmin Et</span>
+            </button>
+            <button id="reset-btn" type="button" style="
+                width:100%;margin-top:10px;padding:11px;border:1px solid var(--glass-border);
+                border-radius:var(--radius-md);background:transparent;color:var(--text-muted);
+                font-family:inherit;font-size:0.9rem;cursor:pointer;transition:all 0.2s;
+            " onmouseover="this.style.borderColor='rgba(255,255,255,0.25)';this.style.color='var(--text-secondary)'"
+               onmouseout="this.style.borderColor='var(--glass-border)';this.style.color='var(--text-muted)'">
+                ↺ Sıfırla
+            </button>
+        </section>
+
+        <!-- Result Card -->
+        <section class="card result-panel" aria-label="Tahmin sonucu" aria-live="polite">
+            <div class="card-header">
+                <div class="card-icon" style="background:linear-gradient(135deg,#0d9488,#10b981)">📊</div>
+                <div>
+                    <div class="card-title">Tahmin Sonucu</div>
+                    <div class="card-subtitle">Model çıktısı ve olasılık dağılımı</div>
+                </div>
+            </div>
+
+            <!-- Placeholder -->
+            <div class="result-placeholder" id="result-placeholder">
+                <div class="placeholder-icon">🌿</div>
+                <p class="placeholder-text">Özellikleri ayarlayın<br />ve <strong>Tahmin Et</strong> butonuna tıklayın.</p>
+            </div>
+
+            <!-- Result (hidden until predict) -->
+            <div class="prediction-result" id="prediction-result">
+
+                <div class="species-display" id="species-display">
+                    <span class="species-emoji" id="species-emoji">🌸</span>
+                    <div class="species-label">Tahmin Edilen Tür</div>
+                    <div class="species-name" id="species-name-text">—</div>
+                    <div class="confidence-badge" id="confidence-badge"></div>
+                </div>
+
+                <div>
+                    <div class="prob-section-title">Olasılık Dağılımı</div>
+                    <div class="prob-bars" id="prob-bars"></div>
+                </div>
+
+            </div>
+        </section>
+
+    </div><!-- /main-grid -->
+
+    <!-- ── Species Info Cards ── -->
+    <div class="species-info-grid" role="complementary" aria-label="Iris türleri hakkında bilgi">
+        <div class="species-card setosa">
+            <div class="sc-top">
+                <span class="sc-emoji">🌸</span>
+                <span class="sc-name setosa">Iris Setosa</span>
+            </div>
+            <p class="sc-desc">En küçük taç yapraklara sahip türdür. Genellikle Arktik ve Subarktik bölgelerde yetişir. Diğer türlerden kolayca ayırt edilir.</p>
+        </div>
+        <div class="species-card versicolor">
+            <div class="sc-top">
+                <span class="sc-emoji">🌼</span>
+                <span class="sc-name versicolor">Iris Versicolor</span>
+            </div>
+            <p class="sc-desc">Mavi-mor çiçekleriyle tanınan orta boyutlu iris türüdür. Kuzey Amerika'nın nemli bölgelerinde yaygın olarak bulunur.</p>
+        </div>
+        <div class="species-card virginica">
+            <div class="sc-top">
+                <span class="sc-emoji">🌺</span>
+                <span class="sc-name virginica">Iris Virginica</span>
+            </div>
+            <p class="sc-desc">En büyük taç ve çanak yapraklara sahip türdür. Güneydoğu Amerika'da bataklık alanlarda yetişir. Diğerlerine göre daha iri yapılıdır.</p>
+        </div>
+    </div>
+
+    <footer>
+        <p>PyTorch ile eğitilmiş model · FastAPI ile sunulmaktadır · Iris Dataset (Fisher, 1936)</p>
+    </footer>
+
+</div><!-- /page-wrapper -->
+
+<!-- Error Toast -->
+<div class="error-toast" id="error-toast" role="alert">
+    <span class="error-toast-icon">⚠️</span>
+    <span id="error-message">Bir hata oluştu.</span>
+</div>
+
+<script src="/static/script.js"></script>
+</body>
+</html>
