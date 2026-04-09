@@ -12,8 +12,6 @@ env/
 ENV/
 
 # ── PyTorch / Model Dosyaları ─────────────────────────────────────────────────
-# Büyük model ağırlıklarını repoya koymak yerine ayrı paylaşın
-*.pth
 *.pt
 *.ckpt
 *.pkl

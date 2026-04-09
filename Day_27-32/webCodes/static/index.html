@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Crop Recommendation AI</title>
+    <meta name="description" content="AI-powered crop recommendation system. Enter your soil and climate data to find the best crop for your land." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+    <!-- Background blobs -->
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+    <div class="bg-blob blob-3"></div>
+
+    <div class="container">
+
+        <!-- Header -->
+        <header class="hero">
+            <div class="hero-badge">🌱 AI-Powered</div>
+            <h1>Crop Recommendation</h1>
+            <p class="hero-subtitle">Enter your soil &amp; climate parameters and let the AI suggest the ideal crop for your land.</p>
+        </header>
+
+        <!-- Main card -->
+        <main class="card">
+
+            <form id="predict-form" novalidate>
+
+                <div class="section-title">
+                    <span class="section-icon">🧪</span>
+                    Soil Nutrients
+                </div>
+
+                <div class="form-grid">
+                    <!-- Nitrogen -->
+                    <div class="form-group">
+                        <label for="nitrogen">Nitrogen (N)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="nitrogen" name="nitrogen"
+                                   placeholder="0 – 200" min="0" max="200" step="0.1" required />
+                            <span class="input-unit">kg/ha</span>
+                        </div>
+                        <div class="error-msg" id="err-nitrogen"></div>
+                    </div>
+
+                    <!-- Phosphorus -->
+                    <div class="form-group">
+                        <label for="phosphorus">Phosphorus (P)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="phosphorus" name="phosphorus"
+                                   placeholder="0 – 200" min="0" max="200" step="0.1" required />
+                            <span class="input-unit">kg/ha</span>
+                        </div>
+                        <div class="error-msg" id="err-phosphorus"></div>
+                    </div>
+
+                    <!-- Potassium -->
+                    <div class="form-group">
+                        <label for="potassium">Potassium (K)</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="potassium" name="potassium"
+                                   placeholder="0 – 200" min="0" max="200" step="0.1" required />
+                            <span class="input-unit">kg/ha</span>
+                        </div>
+                        <div class="error-msg" id="err-potassium"></div>
+                    </div>
+                </div>
+
+                <div class="section-title">
+                    <span class="section-icon">🌍</span>
+                    Climate &amp; Soil Conditions
+                </div>
+
+                <div class="form-grid">
+                    <!-- Temperature -->
+                    <div class="form-group">
+                        <label for="temperature">Temperature</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="temperature" name="temperature"
+                                   placeholder="-10 – 60" min="-10" max="60" step="0.01" required />
+                            <span class="input-unit">°C</span>
+                        </div>
+                        <div class="error-msg" id="err-temperature"></div>
+                    </div>
+
+                    <!-- Humidity -->
+                    <div class="form-group">
+                        <label for="humidity">Humidity</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="humidity" name="humidity"
+                                   placeholder="0 – 100" min="0" max="100" step="0.01" required />
+                            <span class="input-unit">%</span>
+                        </div>
+                        <div class="error-msg" id="err-humidity"></div>
+                    </div>
+
+                    <!-- pH -->
+                    <div class="form-group">
+                        <label for="ph_value">Soil pH</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="ph_value" name="ph_value"
+                                   placeholder="0 – 14" min="0" max="14" step="0.001" required />
+                            <span class="input-unit">pH</span>
+                        </div>
+                        <div class="error-msg" id="err-ph_value"></div>
+                    </div>
+
+                    <!-- Rainfall -->
+                    <div class="form-group">
+                        <label for="rainfall">Annual Rainfall</label>
+                        <div class="input-wrapper">
+                            <input type="number" id="rainfall" name="rainfall"
+                                   placeholder="0 – 500" min="0" max="500" step="0.01" required />
+                            <span class="input-unit">mm</span>
+                        </div>
+                        <div class="error-msg" id="err-rainfall"></div>
+                    </div>
+                </div>
+
+                <!-- Sample data button -->
+                <button type="button" id="fill-sample-btn" class="btn-secondary">
+                    ✨ Fill with sample data (Rice)
+                </button>
+
+                <!-- Submit -->
+                <button type="submit" id="submit-btn" class="btn-primary">
+                    <span id="btn-text">🌾 Get Recommendation</span>
+                    <span id="btn-spinner" class="spinner hidden"></span>
+                </button>
+
+            </form>
+
+            <!-- Result section -->
+            <section id="result-section" class="result hidden" aria-live="polite">
+
+                <div class="result-header">
+                    <div class="result-icon" id="result-emoji">🌾</div>
+                    <div>
+                        <div class="result-label">Recommended Crop</div>
+                        <div class="result-crop" id="result-crop-name">—</div>
+                    </div>
+                    <div class="confidence-badge">
+                        <span id="result-confidence">—</span>% confidence
+                    </div>
+                </div>
+
+                <div class="prob-section">
+                    <div class="prob-title">Top predictions</div>
+                    <div id="prob-bars"></div>
+                </div>
+
+            </section>
+
+            <!-- Error banner -->
+            <div id="error-banner" class="error-banner hidden" role="alert">
+                <span>⚠️</span>
+                <span id="error-banner-msg"></span>
+            </div>
+
+        </main>
+
+        <footer class="footer">
+            Built with FastAPI &amp; PyTorch · Crop Recommendation AI
+        </footer>
+
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+</html>
