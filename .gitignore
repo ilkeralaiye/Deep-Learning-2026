@@ -1,0 +1,33 @@
+# Jupyter Notebook çıktıları ve geçici dosyalar
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+__pycache__/
+*.py[cod]
+
+# Veri Dosyaları (Tüm veri formatlarını kapsar)
+# Veri klasörünüzün adı farklıysa (örn: datasets) ismini güncelleyebilirsiniz
+data/
+data/*
+*.csv
+*.xlsx
+*.xls
+*.json
+*.sql
+*.sqlite
+*.zip
+*.tar.gz
+
+# Sanal Ortam (Virtual Environment)
+venv/
+env/
+.env
+bin/
+lib/
+develop-eggs/
+dist/
+build/
+
+# IDE Ayarları
+.vscode/
+.idea/
+.DS_Store
