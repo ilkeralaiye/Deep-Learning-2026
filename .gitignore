@@ -19,6 +19,7 @@ data/*
 
 # Sanal Ortam (Virtual Environment)
 venv/
+.venv/
 env/
 .env
 bin/
