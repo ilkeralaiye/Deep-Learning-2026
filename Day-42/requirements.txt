@@ -1,0 +1,5 @@
+# Ultralytics YOLO (YOLO11, YOLO12 ve daha fazlası dahil)
+ultralytics>=8.3.0
+
+# OpenCV — görüntü/video işleme ve kamera yönetimi
+opencv-python>=4.9.0
