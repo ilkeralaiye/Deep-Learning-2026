@@ -69,7 +69,7 @@ def train(
 
     for epoch in range(epochs):
         train_loss, train_acc = trainStep(model= model, dataloader=train_dataloader, loss_fn=loss_fn, optimizer=optimizer)
-        test_loss, test_acc = trainStep(model= model, dataloader=test_dataloader, loss_fn=loss_fn, optimizer=optimizer)
+        test_loss, test_acc = testStep(model= model, dataloader=test_dataloader, loss_fn=loss_fn, optimizer=optimizer)
 
         print(f"Epoch: {epoch + 1}, Train loss: {train_loss}, Test loss: {test_loss}, Train acc: {train_acc}, Test acc: {test_acc}")
 
